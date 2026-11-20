@@ -1,4 +1,5 @@
-import { API_URL } from "@/constants";
+import { API_URL, IS_DEMO_MODE } from "@/constants";
+import { getDemoCategories } from "./demo";
 import type { Category } from "@/types/types";
 
 export class DatabaseUnavailableError extends Error {
@@ -9,6 +10,10 @@ export class DatabaseUnavailableError extends Error {
 }
 
 export const getCategories = async (): Promise<Category[]> => {
+  if (IS_DEMO_MODE) {
+    return getDemoCategories();
+  }
+
   const response = await fetch(`${API_URL}/categories`);
 
   let body: unknown;
