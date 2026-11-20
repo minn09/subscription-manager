@@ -35,3 +35,6 @@ features.md
 .agent/notes/
 .agent/cache/
 .agent/*.log
+
+
+.playwright-mcp/
