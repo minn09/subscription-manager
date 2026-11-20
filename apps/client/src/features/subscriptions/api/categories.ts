@@ -1,5 +1,10 @@
 import { API_URL, IS_DEMO_MODE } from "@/constants";
 import { getDemoCategories } from "./demo";
+import {
+  enableLocalFallback,
+  isDatabaseUnavailableResponse,
+  isLocalFallback,
+} from "./localFallback";
 import type { Category } from "@/types/types";
 
 export class DatabaseUnavailableError extends Error {
@@ -10,7 +15,7 @@ export class DatabaseUnavailableError extends Error {
 }
 
 export const getCategories = async (): Promise<Category[]> => {
-  if (IS_DEMO_MODE) {
+  if (IS_DEMO_MODE || isLocalFallback()) {
     return getDemoCategories();
   }
 
@@ -24,13 +29,8 @@ export const getCategories = async (): Promise<Category[]> => {
   }
 
   if (!response.ok) {
-    if (
-      response.status === 503 &&
-      typeof body === "object" &&
-      body !== null &&
-      "code" in body &&
-      body.code === "DATABASE_UNAVAILABLE"
-    ) {
+    if (isDatabaseUnavailableResponse(response, body)) {
+      enableLocalFallback();
       throw new DatabaseUnavailableError();
     }
     throw new Error("Failed to load categories");

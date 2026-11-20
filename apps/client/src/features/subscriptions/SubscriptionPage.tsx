@@ -34,9 +34,12 @@ export const SubscriptionPage = () => {
       try {
         const data = await getCategories();
         setCategories(data);
-        setDatabaseUnavailable(false);
       } catch (error) {
-        setDatabaseUnavailable(error instanceof DatabaseUnavailableError);
+        if (error instanceof DatabaseUnavailableError) {
+          setDatabaseUnavailable(true);
+          const demoCategories = await getCategories();
+          setCategories(demoCategories);
+        }
         console.log("Error loading: ", error);
       }
     };
