@@ -1,0 +1,30 @@
+# .agent/preference.yml
+# Preferencias operativas del agente intent para este repo.
+# Se lee al arrancar, ANTES de clasificar el pedido.
+# Cuando el usuario autoriza en la charla algo que estaba en `ask`, el agente
+# cambia ese valor a `auto` acá mismo: la autorización persiste entre sesiones.
+
+version: 1
+
+delegation:
+  required: true              # hard rule: el orquestador nunca implementa
+  on_violation: stop_and_report
+  require_spec: true
+  spec_dir: .agent/specs
+  worker: cavecrew-builder
+  max_parallel: 3
+
+authorizations:
+  # auto = ejecutar sin preguntar | ask = pedir autorización explícita
+  branch: auto
+  commit: auto
+  push: auto
+  pull_request: auto
+  merge: auto
+  tag: ask
+  release: ask
+
+intake:
+  mode: on_demand             # on_demand | upfront
+  batch_questions: true       # una sola ronda con todas las pendientes
+  apply_at: publish           # cuándo se consultan las autorizaciones

@@ -1,6 +1,10 @@
 packages:
   - apps/*
 
+allowBuilds:
+  '@swc/core': true
+  esbuild: true
+
 minimumReleaseAge: 1440
 
 minimumReleaseAgeExclude:

@@ -1,9 +1,12 @@
 # Subscription Tracker
 
 - Stack
-  - Frontend: TypeScript, TailwindCSS, shadcn, React Hook Form, zod, Zustand, Tanstack Query
-  - Backend: TypeScript, Node.js, Express, Pino-logger, zod, Drizzle, PostgreSQL, Redis
-  - DevOps: Docker, Git/GitHub
+  - Frontend: TailwindCSS, shadcn, RHF (React Hook Form), Zustand, Tanstack Query
+  - Backend: Express, Pino-logger, Drizzle, PostgreSQL, Redis
+    - Tecnologias: CORS, Cookies, JWT
+    - Docs: Scalar
+  - DevOps: Docker, Git/GitHub, Sentry
+  - Both: zod, TypeScript
 
 - Features:
 - [x] CRUD suscripciones (nombre, precio, fecha renovación, categoría)
