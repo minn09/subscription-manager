@@ -28,7 +28,6 @@ npm-debug.log*
 IMPROVEMENTS.md
 index.examples.js
 docs/
-README.md
 features.md
 # .agent/ — artefactos volátiles (fuente de verdad: este archivo, no .agent/.gitignore)
 .agent/context/repo-state.md
