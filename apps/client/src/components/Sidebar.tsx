@@ -77,7 +77,7 @@ export function Sidebar({ isOpen = false, onClose, categories, subscriptions, se
             Categories
           </div>
 
-          {databaseUnavailable ? (
+          {databaseUnavailable && (
             <div
               role="alert"
               aria-live="assertive"
@@ -88,20 +88,19 @@ export function Sidebar({ isOpen = false, onClose, categories, subscriptions, se
                 Categories couldn't be loaded. Check that the database is running, then reload the page.
               </p>
             </div>
-          ) : (
-            <div className="space-y-1">
-              {categories.map((categorie) => (
-                <CategoryItem
-                  key={categorie.id}
-                  label={categorie.name}
-                  count={countCategories(categorie.id)}
-                  color={categorie.color}
-                  isSelected={selectedCategories.includes(categorie.id)}
-                  onToggle={() => handleCategoryToggle(categorie.id)}
-                />
-              ))}
-            </div>
           )}
+          <div className="space-y-1">
+            {categories.map((categorie) => (
+              <CategoryItem
+                key={categorie.id}
+                label={categorie.name}
+                count={countCategories(categorie.id)}
+                color={categorie.color}
+                isSelected={selectedCategories.includes(categorie.id)}
+                onToggle={() => handleCategoryToggle(categorie.id)}
+              />
+            ))}
+          </div>
         </nav>
       </div>
       {/* Footer Actions */}

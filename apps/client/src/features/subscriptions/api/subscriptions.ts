@@ -4,21 +4,32 @@ import {
   editDemoSubscription,
   getDemoSubscriptions,
 } from "./demo";
+import {
+  enableLocalFallback,
+  isDatabaseUnavailableResponse,
+  isLocalFallback,
+} from "./localFallback";
 import type { Subscription } from "@/types/types";
 import type { UpdateSubscription } from "@/types/types";
 
 export const getSubscriptions = async (): Promise<Subscription[]> => {
-  if (IS_DEMO_MODE) {
+  if (IS_DEMO_MODE || isLocalFallback()) {
     return getDemoSubscriptions();
   }
 
   const response = await fetch(`${API_URL}/subscriptions`);
   const subscriptions = await response.json();
+
+  if (isDatabaseUnavailableResponse(response, subscriptions)) {
+    enableLocalFallback();
+    return getDemoSubscriptions();
+  }
+
   return subscriptions;
 };
 
 export const deleteSubscription = async (id: number) => {
-  if (IS_DEMO_MODE) {
+  if (IS_DEMO_MODE || isLocalFallback()) {
     return deleteDemoSubscription(id);
   }
 
@@ -26,6 +37,12 @@ export const deleteSubscription = async (id: number) => {
     method: "DELETE",
   });
   const subscriptions = await response.json();
+
+  if (isDatabaseUnavailableResponse(response, subscriptions)) {
+    enableLocalFallback();
+    return deleteDemoSubscription(id);
+  }
+
   return subscriptions;
 };
 
@@ -33,7 +50,7 @@ export const editSubscription = async (
   id: number,
   subscriptionData: UpdateSubscription
 ) => {
-  if (IS_DEMO_MODE) {
+  if (IS_DEMO_MODE || isLocalFallback()) {
     return editDemoSubscription(id, subscriptionData);
   }
 
@@ -46,12 +63,18 @@ export const editSubscription = async (
       body: JSON.stringify(subscriptionData),
     });
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.message || "Error creating subscription");
+    const result = await response.json().catch(() => ({}));
+
+    if (isDatabaseUnavailableResponse(response, result)) {
+      enableLocalFallback();
+      return editDemoSubscription(id, subscriptionData);
     }
 
-    return await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "Error creating subscription");
+    }
+
+    return result;
   } catch (error) {
     throw new Error(`An error has occurred ${error}`);
   }
