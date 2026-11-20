@@ -30,7 +30,7 @@ export function CategoryDialog({ open, setOpen, setCategories, categories }: Cat
     const color = formData.get('color') as string
 
     const newCategory: Category = {
-      id: crypto.randomUUID(),
+      id: Date.now(),
       name: name,
       color: color
     }

@@ -1,10 +1,16 @@
+import { createDemoSubscription } from "@/features/subscriptions/api/demo";
+import { API_URL, IS_DEMO_MODE } from "@/constants";
 import type { CreateSubscription } from "@/types/types";
 
 export const createSubscription = async (
   subscriptionData: CreateSubscription
 ) => {
+  if (IS_DEMO_MODE) {
+    return createDemoSubscription(subscriptionData);
+  }
+
   try {
-    const response = await fetch("http://localhost:3000/subscriptions", {
+    const response = await fetch(`${API_URL}/subscriptions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

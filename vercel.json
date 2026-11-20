@@ -1,0 +1,7 @@
+{
+  "buildCommand": "pnpm --filter client-subscription-manager build",
+  "outputDirectory": "apps/client/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
