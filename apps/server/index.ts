@@ -5,6 +5,7 @@ import { Pool } from "pg";
 import cors from "cors";
 import pino from "pino";
 import { categoriesTable, subscriptionsTable } from "./src/db/schema.ts";
+import { isDatabaseUnavailable } from "./src/db/errors.ts";
 import { apiReference } from "@scalar/express-api-reference";
 import "dotenv/config";
 import path from "path";
@@ -97,6 +98,12 @@ app.get("/subscriptions", async (req, res) => {
     return res.json(data);
   } catch (error) {
     logger.error(error, "Error fetching subscriptions");
+    if (isDatabaseUnavailable(error)) {
+      return res.status(503).json({
+        error: "Database unavailable",
+        code: "DATABASE_UNAVAILABLE",
+      });
+    }
     return res.status(500).json({ error: "Error obteniendo suscripciones" });
   }
 });
@@ -111,6 +118,12 @@ app.get("/categories", async (req, res) => {
     return res.json(data);
   } catch (error) {
     logger.error(error, "Error fetching categories");
+    if (isDatabaseUnavailable(error)) {
+      return res.status(503).json({
+        error: "Database unavailable",
+        code: "DATABASE_UNAVAILABLE",
+      });
+    }
     return res.status(500).json({ error: "Error obteniendo categorias" });
   }
 });
@@ -130,6 +143,12 @@ app.post("/subscriptions", async (req, res) => {
     });
   } catch (error) {
     logger.error(error, "Error creando suscripción");
+    if (isDatabaseUnavailable(error)) {
+      return res.status(503).json({
+        error: "Database unavailable",
+        code: "DATABASE_UNAVAILABLE",
+      });
+    }
     return res.status(500).json({ error: "Error creando la suscripción" });
   }
 });
@@ -161,6 +180,12 @@ app.patch("/subscriptions/:id", async (req, res) => {
     });
   } catch (error) {
     logger.error(error, "Error actualizando suscripción");
+    if (isDatabaseUnavailable(error)) {
+      return res.status(503).json({
+        error: "Database unavailable",
+        code: "DATABASE_UNAVAILABLE",
+      });
+    }
     return res.status(500).json({ error: "Error actualizando la suscripción" });
   }
 });
@@ -188,6 +213,12 @@ app.delete("/subscriptions/:id", async (req, res) => {
     });
   } catch (error) {
     logger.error(error, "Error eliminando suscripción");
+    if (isDatabaseUnavailable(error)) {
+      return res.status(503).json({
+        error: "Database unavailable",
+        code: "DATABASE_UNAVAILABLE",
+      });
+    }
     return res.status(500).json({ error: "Error eliminando la suscripción" });
   }
 });
