@@ -10,7 +10,7 @@ import { Layout } from "@/components/Layout"
 import { CategoryDialog } from '@/components/CategoryDialog'
 import { SubscriptionDialog } from "@/components/SubscriptionDialog"
 import { SuscriptionCard } from "@/features/subscriptions/SuscriptionCard"
-import { getCategories } from "./api/categories"
+import { DatabaseUnavailableError, getCategories } from "./api/categories"
 import { deleteSubscription, editSubscription, getSubscriptions } from "./api/subscriptions"
 import SubscriptionsEmptyView from "@/components/SubscriptionsEmptyView"
 import { toast } from "sonner"
@@ -20,6 +20,7 @@ export const SubscriptionPage = () => {
   const [subscriptionDialogOpen, setSubscriptionDialogOpen] = useState(false)
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [databaseUnavailable, setDatabaseUnavailable] = useState(false)
   const [selectedCategories, setSelectedCategories] = useState<number[]>([])
   /**
    * 1 Importamos el Dialog
@@ -33,7 +34,9 @@ export const SubscriptionPage = () => {
       try {
         const data = await getCategories();
         setCategories(data);
+        setDatabaseUnavailable(false);
       } catch (error) {
+        setDatabaseUnavailable(error instanceof DatabaseUnavailableError);
         console.log("Error loading: ", error);
       }
     };
@@ -118,6 +121,7 @@ export const SubscriptionPage = () => {
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         categories={categories}
+        databaseUnavailable={databaseUnavailable}
         subscriptions={subscriptions}
         selectedCategories={selectedCategories}
         onCategoryChange={setSelectedCategories}
