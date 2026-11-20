@@ -21,9 +21,10 @@ interface SidebarProps {
   subscriptions: Subscription[]
   selectedCategories: number[]
   onCategoryChange: (categories: number[]) => void
+  databaseUnavailable?: boolean
 }
 
-export function Sidebar({ isOpen = false, onClose, categories, subscriptions, selectedCategories, onCategoryChange }: SidebarProps) {
+export function Sidebar({ isOpen = false, onClose, categories, subscriptions, selectedCategories, onCategoryChange, databaseUnavailable = false }: SidebarProps) {
   const countCategories = (categoryId: number) => {
     return subscriptions.filter(sub => sub.categoryId === categoryId).length;
   }
@@ -76,18 +77,31 @@ export function Sidebar({ isOpen = false, onClose, categories, subscriptions, se
             Categories
           </div>
 
-          <div className="space-y-1">
-            {categories.map((categorie) => (
-              <CategoryItem
-                key={categorie.id}
-                label={categorie.name}
-                count={countCategories(categorie.id)}
-                color={categorie.color}
-                isSelected={selectedCategories.includes(categorie.id)}
-                onToggle={() => handleCategoryToggle(categorie.id)}
-              />
-            ))}
-          </div>
+          {databaseUnavailable ? (
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="rounded-lg bg-muted p-3 text-sm text-foreground"
+            >
+              <p className="font-medium text-destructive">Database unavailable</p>
+              <p className="mt-1 text-muted-foreground">
+                Categories couldn't be loaded. Check that the database is running, then reload the page.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              {categories.map((categorie) => (
+                <CategoryItem
+                  key={categorie.id}
+                  label={categorie.name}
+                  count={countCategories(categorie.id)}
+                  color={categorie.color}
+                  isSelected={selectedCategories.includes(categorie.id)}
+                  onToggle={() => handleCategoryToggle(categorie.id)}
+                />
+              ))}
+            </div>
+          )}
         </nav>
       </div>
       {/* Footer Actions */}
